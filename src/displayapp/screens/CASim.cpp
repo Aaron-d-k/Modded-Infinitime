@@ -48,7 +48,7 @@ T ECA(T board, int rule)
 
 void Pinetime::Applications::Screens::CASim::Refresh() 
 {
-    uint32_t* pixdat = drawbuff.data() + 4; // apparently theresn something wierd in first 16 bytes...
+    uint32_t* pixdat = drawbuff.data() + 4; //apparently there is something in first 16 bytes... Couldn't find in docs. My suspicion is that it might be the colour palette?
     constexpr size_t row_stride = (Wcanvas*2)/32;
     constexpr int shiftsize = 4;
     constexpr int Hscalefactor = 2;
@@ -60,7 +60,7 @@ void Pinetime::Applications::Screens::CASim::Refresh()
     CAstate.mask2 = ECA<uint16_t>(CAstate.mask2,110);
     CAstate.colca = ECA<uint16_t>(CAstate.mask2, 90);
 
-    //lvgl uses bug endian lmao (cry)
+    //lvgl uses bug-endian lol (cry)
     for (size_t r = 0; r < Hcanvas; r++)
     {
         for (size_t i = 0; i < row_stride-1; i++)
@@ -72,7 +72,7 @@ void Pinetime::Applications::Screens::CASim::Refresh()
         pixdat[row_stride*r + row_stride - 1] = __builtin_bswap32((__builtin_bswap32(pixdat[row_stride*r + row_stride - 1])<<shiftsize) | newstate);
     }
 
-    CAstate.bigmask ^= uint8_t(((rng()&rng()&rng()&rng())>>8)&0xFF);
+    CAstate.bigmask ^= uint8_t(((rng()&rng()&rng()&rng())>>8)&0xFF);  //and'ing to reduce density
     CAstate.mask1 ^= uint16_t(((rng()&rng()&rng()&rng())>>8)&0xFFFF); //low bits supposedly have lower randomness.
     CAstate.mask2 ^= uint16_t(((rng()&rng()&rng()&rng())>>8)&0xFFFF);
     CAstate.colca ^= uint16_t(((rng()&rng()&rng()&rng())>>8)&0xFFFF);
