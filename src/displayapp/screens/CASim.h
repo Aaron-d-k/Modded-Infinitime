@@ -72,7 +72,7 @@ namespace Pinetime {
     template <>
     struct AppTraits<Apps::CASim> {
       static constexpr Apps app = Apps::CASim;
-      static constexpr const char* icon = "R";
+      static constexpr const char* icon = "F";
       static Screens::Screen* Create(AppControllers& controllers) {
         return new Screens::CASim(controllers.systemTask);
       }

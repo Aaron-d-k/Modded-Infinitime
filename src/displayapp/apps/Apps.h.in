@@ -47,6 +47,7 @@ namespace Pinetime {
       SettingOTA,
       Error,
       CASim,
+      RenderStuff,
     };
 
     enum class WatchFace : uint8_t {
