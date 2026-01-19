@@ -7,6 +7,83 @@
 
 #include <array>
 
+#include "fastrng.h"
+
+struct cell_line
+{
+    static constexpr size_t N = 240;
+    static constexpr size_t BackingArrSize = (N-1)/32+1;
+    std::array<uint32_t,BackingArrSize> data;
+
+    cell_line operator ~() const
+    {
+        cell_line outp;
+        for (size_t i = 0; i < data.size(); i++)
+        {
+            outp.data[i] = ~data[i];
+        }
+        return outp;
+    }
+
+    cell_line operator |(const cell_line& oth) const
+    {
+        cell_line outp;
+        for (size_t i = 0; i < data.size(); i++)
+        {
+            outp.data[i] = data[i]|oth.data[i];
+        }
+        return outp;
+    }
+
+    cell_line operator &(const cell_line& oth) const
+    {
+        cell_line outp;
+        for (size_t i = 0; i < data.size(); i++)
+        {
+            outp.data[i] = data[i]&oth.data[i];
+        }
+        return outp;
+    }
+
+    cell_line operator ^(const cell_line& oth) const
+    {
+        cell_line outp;
+        for (size_t i = 0; i < data.size(); i++)
+        {
+            outp.data[i] = data[i]^oth.data[i];
+        }
+        return outp;
+    }
+
+    cell_line operator <<(int s) const
+    {
+        cell_line outp;
+        for (size_t i = 0; i < data.size()-1; i++)
+        {
+            outp.data[i] = (data[i]<<s)|(data[i+1]>>(32-s));
+        }
+        outp.data.back() = (data.back()<<s);
+        return outp;
+    }
+
+    cell_line operator >>(int s) const
+    {
+        cell_line outp;
+        outp.data[0] = (data[0]>>s);
+        for (size_t i = 1; i < data.size(); i++)
+        {
+            outp.data[i] = (data[i]>>s)|(data[i-1]<<(32-s));
+        }
+        outp.cleanup();
+        return outp;
+    }
+
+    void cleanup()
+    {
+        data.back() &= (1<<(32-data.size()*32+N)) - 1;
+    }
+};
+
 namespace Pinetime {
   namespace Applications {
     namespace Screens {
@@ -14,6 +91,7 @@ namespace Pinetime {
       public:
         RenderStuff(Pinetime::Components::LittleVgl& lvgl);
         ~RenderStuff() override;
+
 
         void Refresh() override;
 
@@ -24,14 +102,27 @@ namespace Pinetime {
         lv_task_t* taskRefresh;
         lv_obj_t* title;
         Pinetime::Components::LittleVgl& lvgl;
+        fastRNG rng;
         
         std::array<lv_color_t, screenS*scanlineH> drawbuffer;
-        std::array<std::array<uint8_t,16>,screenS/scanlineH> particlebuffer;
 
-        size_t currscanline;
+        std::array<cell_line, screenS> cgolbuffer;
+        cell_line prevLine;
+        size_t nextscanline;
+        void perform_scan();
+        
+        std::array<cell_line,3> sumlo;
+        std::array<cell_line,3> sumhi;
+        std::array<cell_line,4> accum;
+        std::array<cell_line,3> accum2;
+        void IterateState(std::array<const cell_line*, 3> state, cell_line& o);
 
-        static constexpr size_t mem_usage = sizeof(particlebuffer)+sizeof(drawbuffer);
-        static_assert(mem_usage < 5000);
+        
+
+        size_t currchunk;
+
+        static constexpr size_t mem_usage = sizeof(drawbuffer)+sizeof(cgolbuffer);
+        static_assert(mem_usage < 10000);//10KB pls pls pls
 
 
       };

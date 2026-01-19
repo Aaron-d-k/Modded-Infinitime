@@ -72,6 +72,6 @@ bool InfiniPaint::OnTouchEvent(uint16_t x, uint16_t y) {
   area.y1 = y - (height / 2);
   area.x2 = x + (width / 2) - 1;
   area.y2 = y + (height / 2) - 1;
-  lvgl.FlushDisplay(&area, b);
+  lvgl.FlushDisplay(&area, b, false);
   return true;
 }

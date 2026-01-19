@@ -55,7 +55,7 @@ namespace {
 
 static void disp_flush(lv_disp_drv_t* disp_drv, const lv_area_t* area, lv_color_t* color_p) {
   auto* lvgl = static_cast<LittleVgl*>(disp_drv->user_data);
-  lvgl->FlushDisplay(area, color_p);
+  lvgl->FlushDisplay(area, color_p, true);
 }
 
 static void rounder(lv_disp_drv_t* disp_drv, lv_area_t* area) {
@@ -153,7 +153,7 @@ bool LittleVgl::IsScrolling() {
   return scrollDirection != LittleVgl::FullRefreshDirections::None;
 }
 
-void LittleVgl::FlushDisplay(const lv_area_t* area, lv_color_t* color_p) {
+void LittleVgl::FlushDisplay(const lv_area_t* area, lv_color_t* color_p, bool from_flush_cb) {
   uint16_t y1, y2, width, height = 0;
 
   if ((scrollDirection == LittleVgl::FullRefreshDirections::Down) && (area->y2 == visibleNbLines - 1)) {
@@ -231,7 +231,7 @@ void LittleVgl::FlushDisplay(const lv_area_t* area, lv_color_t* color_p) {
 
   // IMPORTANT!!!
   // Inform the graphics library that you are ready with the flushing
-  lv_disp_flush_ready(&disp_drv);
+  if (from_flush_cb) lv_disp_flush_ready(&disp_drv);
 }
 
 void LittleVgl::SetNewTouchPoint(int16_t x, int16_t y, bool contact) {
