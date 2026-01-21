@@ -1,3 +1,3 @@
 export PATH="$PATH:~/node_modules/.bin"
-cmake -DARM_NONE_EABI_TOOLCHAIN_PATH=/usr/ -DNRF5_SDK_PATH=../../nRF5_SDK_15.3.0/ -DCMAKE_BUILD_TYPE=Release -DBUILD_DFU=1 -S .. -DENABLE_USERAPPS="Apps::StopWatch, Apps::Alarm, Apps::Timer, Apps::Steps, Apps::HeartRate, Apps::Music, Apps::Paint, Apps::Paddle, Apps::Twos, Apps::Dice, Apps::Metronome, Apps::Navigation, Apps::Calculator, Apps::Weather, Apps::CASim"
+cmake -DARM_NONE_EABI_TOOLCHAIN_PATH=/usr/ -DNRF5_SDK_PATH=../../nRF5_SDK_15.3.0/ -DCMAKE_BUILD_TYPE=Release -DBUILD_DFU=1 -S .. -DENABLE_USERAPPS="Apps::StopWatch, Apps::Alarm, Apps::Timer, Apps::Steps, Apps::HeartRate, Apps::Music, Apps::Paint, Apps::Paddle, Apps::Twos, Apps::Dice, Apps::Metronome, Apps::Navigation, Apps::Calculator, Apps::Weather, Apps::CASim, Apps::RenderStuff"
 make -j4 pinetime-mcuboot-app
