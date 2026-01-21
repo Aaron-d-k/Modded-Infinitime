@@ -5,7 +5,7 @@
 
 using namespace Pinetime::Applications::Screens;
 
-RenderStuff::RenderStuff(Pinetime::Components::LittleVgl* lvgl, System::SystemTask* systemTask) : lvgl(lvgl), rng(xTaskGetTickCount()), wakeLock(*systemTask) {
+RenderStuff::RenderStuff(Pinetime::Components::LittleVgl* lvgl, System::SystemTask* systemTask) : wakeLock(*systemTask), lvgl(lvgl), rng(xTaskGetTickCount()) {
     title = lv_label_create(lv_scr_act(), nullptr);
     lv_label_set_text_static(title, "Hello!");
     lv_label_set_align(title, LV_LABEL_ALIGN_CENTER);

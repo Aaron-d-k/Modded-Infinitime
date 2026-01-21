@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 
 project(pinetime-app C CXX ASM)
-
+set(pinetime_VERSION_MAJOR ${pinetime_mod_VERSION_MAJOR})
+set(pinetime_VERSION_MINOR ${pinetime_mod_VERSION_MINOR})
+set(pinetime_VERSION_PATCH ${pinetime_mod_VERSION_PATCH})
 
 # define some variables just for this example to determine file locations
 set(NRF_PROJECT_NAME pinetime-app)
